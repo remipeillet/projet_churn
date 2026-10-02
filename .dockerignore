@@ -1,0 +1,10 @@
+.venv/
+mlruns/
+notes_oral/
+figures/
+tests/
+.github/
+*.ipynb
+artefacts/mlflow.db
+churn_saas_complet.csv
+__pycache__/

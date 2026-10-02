@@ -1,0 +1,76 @@
+# Maquette de l'architecture cible (§11.1), exécutable en local.
+#
+#   docker compose run --rm scoring score --lot /data/churn_saas_echantillon.csv \
+#                                         --sortie /data/scores.csv
+#   docker compose up -d mlflow grafana
+#
+# En production, le service `scoring` est déclenché par un planificateur
+# (cron, CronJob Kubernetes, tâche ECS) — il ne tourne pas en permanence.
+
+services:
+  # --- Le job de scoring : éphémère, une exécution par cycle ----------------
+  scoring:
+    build: .
+    image: churn-saas:1.0.0
+    environment:
+      CHURN_ARTEFACTS: /app/artefacts
+      CHURN_VERSION: "1.0.0"
+      # Paramètres métier révisables sans reconstruire l'image (§9.3, §13.3)
+      CHURN_PLANCHER_RISQUE: "0.30"
+      CHURN_CAPACITE: "0.20"
+    volumes:
+      - ./data:/data
+    depends_on:
+      entrepot:
+        condition: service_healthy
+    profiles: ["batch"]
+
+  # --- Entrepôt des scores et des indicateurs de surveillance --------------
+  entrepot:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: churn
+      POSTGRES_PASSWORD: churn
+      POSTGRES_DB: churn
+    volumes:
+      - entrepot:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U churn"]
+      interval: 5s
+      retries: 10
+    ports: ["5432:5432"]
+
+  # --- Suivi d'expériences et registre de modèles (§13.3) ------------------
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.16.0
+    command: >
+      mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri postgresql://churn:churn@entrepot:5432/churn
+      --artifacts-destination /mlartifacts
+    volumes:
+      - mlartifacts:/mlartifacts
+    ports: ["5000:5000"]
+    depends_on:
+      entrepot:
+        condition: service_healthy
+
+  # --- Tableaux de bord métier et surveillance (§13.1) ---------------------
+  # Grafana lit l'entrepôt de scores en SQL : la source est la table de scores,
+  # pas un collecteur de métriques temps réel — le batch est mensuel.
+  grafana:
+    image: grafana/grafana:12.3.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: churn
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    ports: ["3000:3000"]
+    depends_on:
+      entrepot:
+        condition: service_healthy
+
+volumes:
+  entrepot:
+  mlartifacts:
