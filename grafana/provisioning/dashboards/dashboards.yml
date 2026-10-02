@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: churn
+    folder: Rétention
+    type: file
+    options:
+      path: /etc/grafana/provisioning/dashboards

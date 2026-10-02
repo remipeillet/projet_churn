@@ -1,0 +1,14 @@
+apiVersion: 1
+datasources:
+  - name: Entrepôt churn
+    type: postgres
+    uid: entrepot-churn
+    url: entrepot:5432
+    user: churn
+    secureJsonData:
+      password: churn
+    jsonData:
+      database: churn
+      sslmode: disable
+      postgresVersion: 1700
+    isDefault: true

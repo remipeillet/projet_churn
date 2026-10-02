@@ -1,0 +1,231 @@
+{
+  "title": "Rétention — suivi du dispositif",
+  "uid": "churn-retention",
+  "timezone": "browser",
+  "refresh": "",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Comptes signalés (dernier cycle)",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "postgres",
+        "uid": "entrepot-churn"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "SELECT count(*) AS \"alertes\" FROM scores WHERE alerte AND cycle = (SELECT max(cycle) FROM scores);"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Risque de perte couverte (€)",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "datasource": {
+        "type": "postgres",
+        "uid": "entrepot-churn"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "SELECT round(sum(risque_de_perte_eur)) AS \"perte couverte\" FROM scores WHERE alerte AND cycle = (SELECT max(cycle) FROM scores);"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Comptes éligibles (au-dessus du plancher)",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "postgres",
+        "uid": "entrepot-churn"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "SELECT count(*) AS \"eligibles\" FROM scores WHERE probabilite_churn >= plancher_risque AND cycle = (SELECT max(cycle) FROM scores);"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Dernière exécution réussie",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "datasource": {
+        "type": "postgres",
+        "uid": "entrepot-churn"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "SELECT extract(day FROM now() - max(horodatage))::int AS \"jours depuis\" FROM executions WHERE statut = 'succes';"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "d",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 32
+              },
+              {
+                "color": "red",
+                "value": 35
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Version du modèle servie",
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 5
+      },
+      "datasource": {
+        "type": "postgres",
+        "uid": "entrepot-churn"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "SELECT DISTINCT modele_version FROM scores WHERE cycle = (SELECT max(cycle) FROM scores);"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Volume d'alertes et comptes éligibles par cycle",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 5
+      },
+      "datasource": {
+        "type": "postgres",
+        "uid": "entrepot-churn"
+      },
+      "targets": [
+        {
+          "format": "time_series",
+          "rawSql": "SELECT cycle AS time, count(*) FILTER (WHERE alerte) AS \"alertes\", count(*) FILTER (WHERE probabilite_churn >= plancher_risque) AS \"eligibles\" FROM scores GROUP BY cycle ORDER BY cycle;"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Dérive des variables (PSI) — alerte à 0,25",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 5
+      },
+      "datasource": {
+        "type": "postgres",
+        "uid": "entrepot-churn"
+      },
+      "targets": [
+        {
+          "format": "time_series",
+          "rawSql": "SELECT cycle AS time, variable AS metric, valeur FROM surveillance WHERE indicateur = 'psi' ORDER BY cycle;"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.1
+              },
+              {
+                "color": "red",
+                "value": 0.25
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "table",
+      "title": "Couverture par segment — écart de service (§12.1)",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "datasource": {
+        "type": "postgres",
+        "uid": "entrepot-churn"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "SELECT variable AS segment, valeur AS rappel, statut FROM surveillance WHERE indicateur = 'rappel_segment' AND cycle = (SELECT max(cycle) FROM surveillance) ORDER BY valeur;"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Comptes prioritaires du cycle",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "datasource": {
+        "type": "postgres",
+        "uid": "entrepot-churn"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "SELECT priorite, client_id, probabilite_churn, risque_de_perte_eur, facteurs_principaux FROM scores WHERE alerte AND cycle = (SELECT max(cycle) FROM scores) ORDER BY priorite LIMIT 20;"
+        }
+      ]
+    }
+  ]
+}
