@@ -10,3 +10,7 @@ slides/slide-*.jpg
 
 # Journal d'executions : etat produit a chaque lancement, pas du code.
 artefacts/journal_executions.jsonl
+
+# Fichiers de donnees : jamais versionnes (§4.3, minimisation).
+catalogue_plans.csv
+churn_saas_*.csv
