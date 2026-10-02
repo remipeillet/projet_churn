@@ -25,9 +25,9 @@ class TestScoringBoutEnBout:
         signales = scores[scores["alerte"]]
         assert (signales["probabilite_churn"] >= config.plancher_risque).all()
 
-    def test_les_signales_sont_ordonnes_par_perte_esperee(self, scoreur, lot_brut):
+    def test_les_signales_sont_ordonnes_par_risque_de_perte(self, scoreur, lot_brut):
         signales = scoreur.scorer(lot_brut).query("alerte")
-        assert signales["perte_esperee_eur"].is_monotonic_decreasing
+        assert signales["risque_de_perte_eur"].is_monotonic_decreasing
         assert signales["priorite"].tolist() == list(range(1, len(signales) + 1))
 
     def test_chaque_compte_signale_porte_ses_facteurs(self, scoreur, lot_brut):

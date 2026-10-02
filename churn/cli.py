@@ -65,7 +65,7 @@ def _commande_score(arguments: argparse.Namespace) -> int:
         scores.to_csv(arguments.sortie, index=False, encoding="utf-8")
         print(f"Écrit dans          : {arguments.sortie}")
     else:
-        colonnes = ["priorite", "client_id", "probabilite_churn", "perte_esperee_eur"]
+        colonnes = ["priorite", "client_id", "probabilite_churn", "risque_de_perte_eur"]
         print("\n" + scores.head(10)[colonnes].to_string(index=False))
 
     _tracer("succes", comptes=len(scores), alertes=alertes)

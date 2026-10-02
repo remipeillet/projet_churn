@@ -42,13 +42,13 @@ class Scoreur:
                 "client_id": brut["client_id"].to_numpy(),
                 "probabilite_churn": probabilites.round(4),
                 "valeur_estimee_eur": valeurs.round(0),
-                "perte_esperee_eur": (probabilites * valeurs).round(0),
+                "risque_de_perte_eur": (probabilites * valeurs).round(0),
                 "alerte": selection,
                 "facteurs_principaux": self.artefacts.facteurs(prepare),
                 "modele_version": self.config.version,
                 "plancher_risque": self.config.plancher_risque,
             }
-        ).sort_values(["alerte", "perte_esperee_eur"], ascending=[False, False], ignore_index=True)
+        ).sort_values(["alerte", "risque_de_perte_eur"], ascending=[False, False], ignore_index=True)
         return valider_scores(scores)
 
 

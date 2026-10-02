@@ -18,13 +18,13 @@ def prioriser(
     Étape 1 — éligibilité : probabilité >= plancher de risque. Un compte moins
     risqué que la moyenne du portefeuille n'est jamais signalé au seul motif de
     sa taille.
-    Étape 2 — priorisation : perte espérée décroissante, dans la limite de la
+    Étape 2 — priorisation : risque de perte décroissant, dans la limite de la
     capacité de traitement.
     """
     probabilites = np.asarray(probabilites, dtype=float)
-    perte_esperee = probabilites * np.asarray(valeurs, dtype=float)
+    risque_de_perte = probabilites * np.asarray(valeurs, dtype=float)
     eligibles = np.where(probabilites >= plancher)[0]
-    retenus = eligibles[np.argsort(-perte_esperee[eligibles])][: max(capacite, 0)]
+    retenus = eligibles[np.argsort(-risque_de_perte[eligibles])][: max(capacite, 0)]
 
     selection = np.zeros(len(probabilites), dtype=bool)
     selection[retenus] = True

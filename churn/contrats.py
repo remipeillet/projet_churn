@@ -65,7 +65,7 @@ SCHEMA_SCORES = DataFrameSchema(
         "client_id": Column(str, nullable=False, unique=True),
         "probabilite_churn": Column(float, Check.in_range(0.0, 1.0), nullable=False),
         "valeur_estimee_eur": Column(float, Check.ge(0.0), nullable=False),
-        "perte_esperee_eur": Column(float, Check.ge(0.0), nullable=False),
+        "risque_de_perte_eur": Column(float, Check.ge(0.0), nullable=False),
         "priorite": Column(float, nullable=True),
         "alerte": Column(bool, nullable=False),
         "facteurs_principaux": Column(str, nullable=False),

@@ -21,7 +21,7 @@ class TestPriorisation:
         selection, _ = prioriser(probabilites, valeurs, capacite=20, plancher=0.30)
         assert selection.sum() == 20
 
-    def test_l_ordre_suit_la_perte_esperee(self):
+    def test_l_ordre_suit_la_risque_de_perte(self):
         probabilites = np.array([0.60, 0.85])
         valeurs = np.array([30_000.0, 2_000.0])  # l'exemple de §9.4
         selection, rangs = prioriser(probabilites, valeurs, capacite=2, plancher=0.30)
