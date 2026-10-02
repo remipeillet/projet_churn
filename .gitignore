@@ -7,3 +7,6 @@ data/
 slides/node_modules/
 slides/package*.json
 slides/slide-*.jpg
+
+# Journal d'executions : etat produit a chaque lancement, pas du code.
+artefacts/journal_executions.jsonl

@@ -1,0 +1,27 @@
+{
+  "version_modele": "1.0.0",
+  "artefact": "modele_churn_v1.0.0.joblib",
+  "manifeste": "modele_churn_v1.0.0.json",
+  "jeu_source": "churn_saas_complet.csv",
+  "comptes_entrainement": 4000,
+  "comptes_test": 1000,
+  "graine_aleatoire": 42,
+  "parametres_metier": {
+    "taux_retention": 0.3,
+    "cout_action_eur": 150.0,
+    "capacite_csm": 0.2,
+    "plancher_risque": 0.3,
+    "seuil_risque_equivalent": 0.55,
+    "regle": "risque x valeur (§9.4)"
+  },
+  "environnement": {
+    "python": "3.13.5",
+    "plateforme": "Linux-7.1.8+deb13-amd64-x86_64-with-glibc2.41",
+    "pandas": "3.0.5",
+    "numpy": "2.5.2",
+    "scikit-learn": "1.9.0",
+    "matplotlib": "3.11.1",
+    "seaborn": "0.13.2",
+    "seed": 42
+  }
+}

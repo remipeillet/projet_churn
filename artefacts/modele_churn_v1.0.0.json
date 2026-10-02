@@ -1,0 +1,95 @@
+{
+  "version": "1.0.0",
+  "date_entrainement": "2026-09-25",
+  "estimateur": "LogisticRegression",
+  "hyperparametres": {
+    "C": 0.1,
+    "penalty": "l1",
+    "solver": "liblinear"
+  },
+  "regle_de_priorisation": "risque x valeur — risque de perte (§9.4)",
+  "plancher_risque": 0.3,
+  "plancher_justification": "prevalence du portefeuille : aucun compte moins risque que la moyenne n'est signale",
+  "capacite_par_cycle": 0.2,
+  "seuil_decision_risque_seul": 0.55,
+  "seuil_justification": "seuil de risque equivalent a la capacite CSM (20%) - §9.3, conserve comme repere ; la selection livree applique la regle de §9.4",
+  "modele_valeur": "modele_valeur_v1.0.0.joblib",
+  "colonnes_attendues": [
+    "secteur",
+    "taille_entreprise",
+    "plan",
+    "anciennete_mois",
+    "sieges_souscrits",
+    "utilisateurs_actifs",
+    "taux_adoption_pct",
+    "connexions_30j",
+    "heures_usage_30j",
+    "fonctionnalites_utilisees",
+    "nb_integrations",
+    "derniere_connexion_jours",
+    "tickets_support_90j",
+    "delai_reponse_support_h",
+    "csat",
+    "retards_paiement_12m",
+    "revenu_mensuel_recurrent_eur",
+    "taux_fonctionnalites",
+    "heures_par_siege",
+    "tickets_par_siege",
+    "respect_sla",
+    "ratio_prix_catalogue"
+  ],
+  "cible": "churn",
+  "performance_validation_croisee": {
+    "roc_auc": 0.8921,
+    "pr_auc": 0.7929,
+    "protocole": "5 plis stratifies sur 4000 comptes d'entrainement"
+  },
+  "variables_exclues": [
+    {
+      "colonne": "client_id",
+      "motif": "identifiant"
+    },
+    {
+      "colonne": "sante_compte_fin_periode",
+      "motif": "fuite"
+    },
+    {
+      "colonne": "commentaire_csm",
+      "motif": "fuite + ethique"
+    },
+    {
+      "colonne": "valeur_vie_client_eur",
+      "motif": "cible secondaire"
+    },
+    {
+      "colonne": "date_souscription",
+      "motif": "redondance"
+    },
+    {
+      "colonne": "pays",
+      "motif": "ethique + absence de signal"
+    },
+    {
+      "colonne": "jour_souscription",
+      "motif": "aucune dependance etablie"
+    },
+    {
+      "colonne": "code_datacenter",
+      "motif": "absence d'effet"
+    },
+    {
+      "colonne": "couleur_theme_interface",
+      "motif": "absence d'effet"
+    },
+    {
+      "colonne": "groupe_experimentation",
+      "motif": "absence d'effet"
+    }
+  ],
+  "environnement": {
+    "python": "3.13.5",
+    "scikit-learn": "1.9.0",
+    "pandas": "3.0.5"
+  },
+  "graine_aleatoire": 42
+}

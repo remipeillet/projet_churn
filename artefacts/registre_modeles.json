@@ -1,0 +1,14 @@
+[
+  {
+    "version": "1.0.0",
+    "date_entrainement": "2026-09-25",
+    "estimateur": "LogisticRegression",
+    "plancher_risque": 0.3,
+    "capacite_par_cycle": 0.2,
+    "roc_auc_validation": 0.8921,
+    "pr_auc_validation": 0.7929,
+    "artefact": "modele_churn_v1.0.0.joblib",
+    "statut": "en production",
+    "commentaire": "version initiale — regression logistique l1 (C=0,1) + modele de valeur ; priorisation risque x valeur (§9.4)"
+  }
+]

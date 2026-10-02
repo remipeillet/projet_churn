@@ -1,0 +1,9 @@
+# Dépendances d'exécution du dispositif de scoring (§15.1).
+# Versions figées : l'artefact sérialisé n'est rechargeable à l'identique que
+# sous la version de scikit-learn qui l'a produit.
+pandas==3.0.5
+numpy==2.5.2
+scipy==1.18.1
+scikit-learn==1.9.0
+joblib==1.6.0
+pandera==0.33.1

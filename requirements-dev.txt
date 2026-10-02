@@ -1,0 +1,8 @@
+# Dépendances de développement : notebook, expérimentation, tests.
+-r requirements.txt
+matplotlib==3.11.1
+seaborn==0.13.2
+mlflow==3.16.0
+optuna==5.0.0
+pytest==9.1.1
+ruff==0.16.8

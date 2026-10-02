@@ -1,0 +1,30 @@
+# Contrôles exécutés avant chaque commit — mêmes outils qu'en intégration
+# continue, pour que l'échec survienne sur le poste et non dans la CI.
+#
+#   pre-commit install        (une fois)
+#   pre-commit run --all-files
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.8
+    hooks:
+      - id: ruff            # analyse statique, avec correction automatique
+        args: [--fix]
+      - id: ruff-format     # formatage déterministe
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+        exclude: '\.ipynb$'
+      - id: trailing-whitespace
+        exclude: '\.ipynb$'
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+        args: [--maxkb=2048]
+        exclude: '\.(csv|ipynb)$'
