@@ -1,0 +1,9 @@
+mlruns/
+artefacts/mlflow.db
+__pycache__/
+.pytest_cache/
+data/
+*.egg-info/
+slides/node_modules/
+slides/package*.json
+slides/slide-*.jpg
