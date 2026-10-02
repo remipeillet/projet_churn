@@ -18,8 +18,12 @@ services:
       # Paramètres métier révisables sans reconstruire l'image (§9.3, §13.3)
       CHURN_PLANCHER_RISQUE: "0.30"
       CHURN_CAPACITE: "0.20"
+      CHURN_CATALOGUE: /data/catalogue_plans.csv
     volumes:
       - ./data:/data
+      # Référentiel des plans : donnée d'entrée, non versionnée et non
+      # embarquée dans l'image (§5.1). Il doit exister avant le lancement.
+      - ./catalogue_plans.csv:/data/catalogue_plans.csv:ro
     depends_on:
       entrepot:
         condition: service_healthy

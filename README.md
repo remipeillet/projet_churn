@@ -12,6 +12,21 @@ accompagnée des facteurs qui expliquent chaque score.
 | **Modèle** | régression logistique (L1, C = 0,1) · ROC-AUC 0,883 · PR-AUC 0,762 sur jeu de test |
 | **Règle de décision** | plancher de risque 0,30, puis priorisation par `probabilité × valeur vie estimée`, dans la limite de la capacité CSM (20 % du portefeuille) |
 
+## Données d'entrée
+
+Aucun fichier de données n'est versionné. Trois fichiers sont attendus à la
+racine avant toute exécution, et fournis séparément :
+
+| Fichier | Rôle |
+|---|---|
+| `catalogue_plans.csv` | Référentiel des quatre formules — prix au siège, SLA, quota, support dédié |
+| `churn_saas_complet.csv` | Portefeuille complet, pour rejouer le notebook |
+| `churn_saas_echantillon.csv` | Lot de 50 comptes, pour une exécution de démonstration |
+
+Le référentiel est une **entrée d'exécution**, pas un contenu de l'image : son
+chemin se surcharge par `CHURN_CATALOGUE`, et une grille tarifaire révisée ne
+demande aucune reconstruction.
+
 ## Démarrage
 
 ```bash
@@ -41,6 +56,8 @@ tests : une erreur de style ou un identifiant en clair arrête la chaîne.
 
 ```bash
 docker build -t churn-saas:1.0.0 .
+
+# Le référentiel des plans n'est pas dans l'image : il se monte avec les données.
 docker run --rm -v "$PWD:/data" churn-saas:1.0.0 score --lot /data/churn_saas_echantillon.csv
 
 docker compose up -d entrepot mlflow grafana    # maquette de l'architecture cible
@@ -71,6 +88,8 @@ sql/            schéma de l'entrepôt : scores, actions CSM, indicateurs
 grafana/        source de données et tableau de bord provisionnés
 figures/        schéma d'architecture et son code de génération
 notes_oral/     fiches de préparation (hors livrable)
+
+*.csv           données d'entrée — non versionnées, fournies séparément
 ```
 
 ## Paramètres métier

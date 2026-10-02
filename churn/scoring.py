@@ -48,7 +48,9 @@ class Scoreur:
                 "modele_version": self.config.version,
                 "plancher_risque": self.config.plancher_risque,
             }
-        ).sort_values(["alerte", "risque_de_perte_eur"], ascending=[False, False], ignore_index=True)
+        ).sort_values(
+            ["alerte", "risque_de_perte_eur"], ascending=[False, False], ignore_index=True
+        )
         return valider_scores(scores)
 
 

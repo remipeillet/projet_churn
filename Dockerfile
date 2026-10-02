@@ -16,7 +16,10 @@ COPY pyproject.toml ./
 COPY churn/ ./churn/
 COPY artefacts/modele_churn_v1.0.0.joblib artefacts/modele_valeur_v1.0.0.joblib \
      artefacts/modele_churn_v1.0.0.json ./artefacts/
-COPY catalogue_plans.csv ./
+
+# Le référentiel des plans n'entre pas dans l'image : c'est une donnée
+# d'entrée, montée à l'exécution. Une grille tarifaire change sans que le
+# modèle change — la figer ici imposerait de reconstruire l'image.
 
 # Exécution sans privilèges.
 RUN useradd --create-home --uid 10001 scoring && chown -R scoring:scoring /app
@@ -24,7 +27,8 @@ USER scoring
 
 # Les paramètres métier sont surchargeables sans reconstruire l'image (§13.3).
 ENV CHURN_ARTEFACTS=/app/artefacts \
-    CHURN_VERSION=1.0.0
+    CHURN_VERSION=1.0.0 \
+    CHURN_CATALOGUE=/data/catalogue_plans.csv
 
 ENTRYPOINT ["python", "-m", "churn"]
 CMD ["--help"]

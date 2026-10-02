@@ -15,6 +15,9 @@ from pathlib import Path
 RACINE = Path(os.environ.get("CHURN_RACINE", Path(__file__).resolve().parent.parent))
 ARTEFACTS = Path(os.environ.get("CHURN_ARTEFACTS", RACINE / "artefacts"))
 VERSION_MODELE = os.environ.get("CHURN_VERSION", "1.0.0")
+# Le referentiel des plans est une donnee d'entree, pas un contenu de
+# l'image : il est monte a l'execution et peut changer sans redeploiement.
+CATALOGUE = Path(os.environ.get("CHURN_CATALOGUE", RACINE / "catalogue_plans.csv"))
 
 # Colonnes du périmètre (§7.6) — l'ordre est imposé par le modèle sérialisé.
 COLONNES_CATEGORIELLES = [
@@ -103,7 +106,7 @@ def charger_config(
         chemin_valeur=artefacts
         / manifeste.get("modele_valeur", f"modele_valeur_v{version}.joblib"),
         chemin_manifeste=chemin_manifeste,
-        chemin_catalogue=Path(catalogue or RACINE / "catalogue_plans.csv"),
+        chemin_catalogue=Path(catalogue or CATALOGUE),
         plancher_risque=_flottant_env("CHURN_PLANCHER_RISQUE", manifeste["plancher_risque"]),
         capacite_par_cycle=_flottant_env("CHURN_CAPACITE", manifeste["capacite_par_cycle"]),
         colonnes_attendues=list(manifeste["colonnes_attendues"]),

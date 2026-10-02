@@ -7,6 +7,7 @@ import pandas as pd
 import pytest
 
 from churn.preparation import (
+    charger_catalogue,
     normaliser_categorie,
     parse_date_multi,
     preparer,
@@ -99,3 +100,14 @@ class TestPreparationComplete:
     def test_ne_duplique_aucune_ligne(self, lot_brut, catalogue, config):
         prepare = preparer(lot_brut, catalogue, config.colonnes_attendues)
         assert len(prepare) == len(lot_brut)
+
+
+class TestChargementDuCatalogue:
+    """Le référentiel est une donnée d'entrée (§5.1) : son absence doit se dire."""
+
+    def test_normalise_la_cle_de_jointure(self, catalogue):
+        assert set(catalogue["plan"]) == {"STARTER", "PRO", "BUSINESS", "ENTERPRISE"}
+
+    def test_absence_du_fichier_leve_une_erreur_explicite(self, tmp_path):
+        with pytest.raises(FileNotFoundError, match="CHURN_CATALOGUE"):
+            charger_catalogue(tmp_path / "catalogue_absent.csv")

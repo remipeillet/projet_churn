@@ -74,6 +74,12 @@ def parse_date_multi(serie: pd.Series, formats: tuple[str, ...] = FORMATS_DATE) 
 
 def charger_catalogue(chemin: Path) -> pd.DataFrame:
     """Charge le référentiel des plans et normalise sa clé de jointure (§7.5)."""
+    if not Path(chemin).exists():
+        raise FileNotFoundError(
+            f"référentiel des plans introuvable : {chemin}. "
+            "Le fichier est une donnée d'entrée, fournie à l'exécution "
+            "(variable CHURN_CATALOGUE)."
+        )
     catalogue = pd.read_csv(chemin, encoding="utf-8-sig")
     catalogue["plan"] = normaliser_categorie(catalogue["plan"])
     catalogue["support_dedie"] = (catalogue["support_dedie"] == "Oui").astype(int)

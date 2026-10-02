@@ -14,3 +14,12 @@ artefacts/journal_executions.jsonl
 # Fichiers de donnees : jamais versionnes (§4.3, minimisation).
 catalogue_plans.csv
 churn_saas_*.csv
+
+# Sources du support : seul le PDF est livre.
+slides/build.js
+slides/img/
+slides/*.pptx
+slides/.~lock.*
+
+# Enonce du cas d'usage : document tiers, non redistribue.
+Enonce cas usage_churn_saas.pdf
